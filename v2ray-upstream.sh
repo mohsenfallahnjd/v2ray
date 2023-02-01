@@ -5,7 +5,9 @@ sleepClear() {
     clear
 }
 
-read -p "Enter port (default 1310):" port
+if [[ $1 == "-p" ]]; then
+    read -p "Enter port (default 1310):" port
+fi
 
 yes | sudo apt update
 
@@ -52,7 +54,7 @@ echo ""
 
 if [ "$port" != "" ]; then
     sed -i "s/1310/$port/" v2ray/config/config.json
-    sed -i "s/1310:1310/$port:$port/" docker-compose.yml
+    sed -i "s/1310/$port/g" docker-compose.yml
 
     echo "Change port ..."
     echo ""

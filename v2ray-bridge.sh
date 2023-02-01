@@ -21,7 +21,9 @@ while : ; do
     [[ "$upstreamUUID" == "" ]] || break
 done
 
-read -p "Enter plus number with port: " port
+if [[ $1 == "-p" ]]; then
+    read -p "Enter upstream port (default 1310): " port
+fi
 
 setShekan
 
@@ -79,15 +81,16 @@ echo ""
 echo ""
 
 if [ "$port" != "" ]; then
-    sed -i "s/1010/$(( 1010 + port ))/g" docker-compose.yml
-    sed -i "s/1110/$(( 1110 + port ))/g" docker-compose.yml
-    sed -i "s/1210/$(( 1210 + port ))/g" docker-compose.yml
-    sed -i "s/1310/$(( 1310 + port ))/g" docker-compose.yml
+    diff=$(( 1310 - port ))
+    sed -i "s/1010/$(( 1010 - diff ))/g" docker-compose.yml
+    sed -i "s/1110/$(( 1110 - diff ))/g" docker-compose.yml
+    sed -i "s/1210/$(( 1210 - diff ))/g" docker-compose.yml
+    sed -i "s/1310/$(( 1310 - diff ))/g" docker-compose.yml
 
-    sed -i "s/1010/$(( 1010 + port ))/g" v2ray/config/config.json
-    sed -i "s/1110/$(( 1110 + port ))/g" v2ray/config/config.json
-    sed -i "s/1210/$(( 1210 + port ))/g" v2ray/config/config.json
-    sed -i "s/1310/$(( 1310 + port ))/g" v2ray/config/config.json
+    sed -i "s/1010/$(( 1010 - diff ))/g" v2ray/config/config.json
+    sed -i "s/1110/$(( 1110 - diff ))/g" v2ray/config/config.json
+    sed -i "s/1210/$(( 1210 - diff ))/g" v2ray/config/config.json
+    sed -i "s/1310/$(( 1310 - diff ))/g" v2ray/config/config.json
 
     echo "Port Changed."
     echo ""
@@ -103,9 +106,11 @@ cd ~/v2ray-docker-compose/v2ray-bridge-server/ || exit
 echo ""
 echo ""
 echo "================================================================"
+echo ""
 
 ./clients.py
 
+echo ""
 echo "================================================================"
 echo ""
 echo ""
